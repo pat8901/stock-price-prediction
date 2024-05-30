@@ -1,4 +1,5 @@
 import typing
+import pandas as pd
 from datetime import date
 from datetime import timedelta
 from datetime import datetime
@@ -6,35 +7,45 @@ from dateutil.relativedelta import relativedelta
 from polygon import RESTClient
 import os
 from dotenv import load_dotenv
+from typing import cast
+from urllib3 import HTTPResponse
+import json
 
 
-def getRecentStockData(ticker: str, from_date: str, to_date: str):
+def getRecentStockData(ticker: str, from_date: str, to_date: str) -> pd.DataFrame:
     """Fetches most up to data historical dataset to preform data analysis on"""
+
     load_dotenv()
     key: str = os.getenv("API_KEY")
     client = RESTClient(api_key=key)
-
+    df = pd.DataFrame(columns=["date", "price"])
     ticker: str = "AAPL"
-    aggs = []
-    count: int = 0
 
-    for a in client.list_aggs(
-        ticker=ticker,
-        multiplier=1,
-        timespan="day",
-        from_=from_date,
-        to=to_date,
-    ):
-        aggs.append(a)
-        count = count + 1
+    request = cast(
+        HTTPResponse,
+        client.get_aggs(
+            ticker=ticker,
+            multiplier=1,
+            timespan="day",
+            from_=from_date,
+            to=to_date,
+            raw=True,
+        ),
+    )
 
-        print("========================================")
-        print(f"count: {count}")
-        print(a)
+    json_response = json.loads(request.data.decode("utf-8"))
+    result_amount = json_response["resultsCount"]
+    print(f"count {result_amount}")
 
-    # print(aggs)
+    for i in range(result_amount):
+        stock_name = json_response["ticker"]
+        stock_date = json_response["results"][i]["t"]
+        stock_price = json_response["results"][i]["vw"]
+        df.loc[i] = stock_date, stock_price
 
-    return None
+    print(df)
+
+    return df
 
 
 def getYesterdaysDate() -> str:

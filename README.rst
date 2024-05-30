@@ -16,7 +16,8 @@ stock-price-prediction
 
 
 
-Uses machine learning to predict future stock prices based on historical data
+Uses machine learning to predict future stock prices based on historical data. The goal of this program is 
+to be used for long term price prediction. Real time data is not considered in this program. 
 
 
 * Free software: MIT license
@@ -27,11 +28,3 @@ Features
 --------
 
 * TODO
-
-Credits
--------
-
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
-
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
