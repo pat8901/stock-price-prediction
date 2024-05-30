@@ -5,7 +5,7 @@
 import pytest
 
 
-from stock_price_prediction import stock_price_prediction
+from stock_price_prediction import stock
 
 
 @pytest.fixture
